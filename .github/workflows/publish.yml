@@ -1,4 +1,4 @@
-name: 🚀 Publish to NPM test
+name: 🚀 Publish to NPM
 on:
   release:
     types: [created]
@@ -14,15 +14,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v2
+      - uses: actions/cache@v3
+        env:
+          cache-name: cache-pnpm-modules
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
+
+      - uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 8.6.9
+
+      - uses: actions/setup-node@v3
         with:
           node-version: "18"
-
-      # Cache node_modules but bust that cache any time the pnpm-lock.yaml file changes.
-      - uses: actions/cache@v2
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/pnpm-lock.yaml') }}
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm i
