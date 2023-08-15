@@ -40,6 +40,6 @@ jobs:
         run: pnpm build
 
       - name: Publish package on NPM 📦
-        run: pnpm publish --publish-branch main
+        run: pnpm publish --publish-branch main -no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
