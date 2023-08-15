@@ -39,7 +39,18 @@ jobs:
       - name: Build CLI tool 🔧
         run: pnpm build
 
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: 📝 Version
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: pnpm version ${TAG_NAME} --no-git-tag-version
+
       - name: Publish package on NPM 📦
-        run: pnpm publish --publish-branch main -no-git-checks
+        run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
