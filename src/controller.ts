@@ -27,15 +27,15 @@ export default class Controller {
         );
         const delimiter = ",";
         const words = remainingCommands.split(delimiter);
-        const xPosition: number = parseInt(words[0]);
-        const yPosition: number = parseInt(words[1]);
+        const xPosition: number = parseInt(words[0].trim());
+        const yPosition: number = parseInt(words[1].trim());
 
-        if (!(Object as any).values(Directions).includes(words[2])) {
+        if (!Object.values(Directions).includes(words[2].trim())) {
           process.stdout.write("Command ignored - invalid direction \n");
           return;
         }
 
-        const direction: Directions = (Directions as any)[words[2]];
+        const direction: Directions = (Directions as any)[words[2].trim()];
 
         if (!this.robot.isValidPosition(xPosition, yPosition)) {
           process.stdout.write("Command ignored - out of bounds \n");
